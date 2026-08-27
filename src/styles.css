@@ -2805,3 +2805,63 @@ body::before {
   font-size: 10px;
   font-weight: 600;
 }
+
+/* ---------- 配置模型弹窗：整体放大 + 松开呼吸 ---------- */
+.modal.wide {
+  max-width: min(1180px, calc(100vw - 56px));
+  max-height: calc(100vh - 48px);
+}
+.modal.wide .modal-body { padding: 24px 28px; gap: 20px; }
+.model-manager { grid-template-columns: 240px 1fr; gap: 24px; }
+.model-form { padding-right: 4px; }
+
+/* 表单区更松：字段间距、控件高度、双列间距全放大 */
+.model-form .field { gap: 7px; margin-bottom: 4px; }
+.model-form .grid-2 { gap: 16px 20px; }
+.model-form .input,
+.model-form .textarea,
+.model-form .dd-trigger { padding: 10px 13px; font-size: 13px; }
+.model-form .input.mono { font-size: 12.5px; }
+.model-form > .field + .field,
+.model-form > .grid-2 + .field,
+.model-form > .field + .grid-2,
+.model-form > .grid-2 + .grid-2 { margin-top: 14px; }
+
+/* 「价格」这类小节标题：用分隔线立起结构，别和普通字段标签挤成一团 */
+.model-form .field > label {
+  font-size: 12.5px;
+}
+.model-form .field:has(> .grid-2) > label,
+.model-form .sub-label {
+  color: var(--text-3);
+  font-weight: 600;
+}
+.model-form .field:has(> .grid-2) {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+.model-form .field:has(> .grid-2) > label {
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+/* 配置模型：左右两栏各自滚动，导航永远在视野里（sticky 会被整体滚动带走） */
+.modal:has(.model-manager) { height: calc(100vh - 48px); }
+.modal:has(.model-manager) .modal-body { overflow: hidden; }
+.modal:has(.model-manager) .model-manager {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  align-items: stretch;
+}
+.model-nav {
+  position: static;
+  max-height: none;
+  overflow-y: auto;
+}
+.model-form {
+  overflow-y: auto;
+  min-height: 0;
+  padding-right: 12px;
+}

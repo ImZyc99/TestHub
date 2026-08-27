@@ -46,13 +46,17 @@ export function ModelModal({ modelId }: { modelId: string | null }) {
   const [selectedId, setSelectedId] = useState<string | null>(modelId)
   const existing = models.find((m) => m.id === selectedId)
 
-  const [draft, setDraft] = useState<ModelConfig>(existing ? { ...existing } : blank(activeKind))
+  // 草稿和基线必须来自同一个对象 —— blank() 每次调用会生成新的随机 id，
+  // 各调一次会导致指纹永远不相等：弹窗一打开就被判为「有未保存修改」，
+  // 点任何模型都弹原生 confirm，而原生对话框会冻住整个渲染进程
+  const [initial] = useState<ModelConfig>(() => (existing ? { ...existing } : blank(activeKind)))
+  const [draft, setDraft] = useState<ModelConfig>(initial)
   const [apiKey, setApiKey] = useState('')
   const [keyTouched, setKeyTouched] = useState(false)
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState<{ ok: boolean; message: string } | null>(null)
   const [remoteModels, setRemoteModels] = useState<string[] | null>(null)
-  const baseline = useRef(fingerprint(existing ? { ...existing } : blank(activeKind)))
+  const baseline = useRef(fingerprint(initial))
 
   const kind: ProjectKind = draft.kind ?? 'text'
   const isGen = kind !== 'text'
