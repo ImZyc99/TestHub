@@ -8,7 +8,7 @@ import { SystemPromptModal } from './components/SystemPromptModal'
 import { ModelModal } from './components/ModelModal'
 import { PromptLibraryModal } from './components/PromptLibraryModal'
 import { SettingsModal } from './components/SettingsModal'
-import { IconBroadcast, IconCollapse, IconTrash } from './components/Icons'
+import { IconBroadcast, IconCollapse, IconSparkle, IconTrash } from './components/Icons'
 import { RenameInput } from './components/RenameInput'
 import { money } from './lib/money'
 
@@ -66,6 +66,7 @@ function Topbar() {
   const clearAll = useStore((s) => s.clearAll)
   const renameProject = useStore((s) => s.renameProject)
   const syncSystemPromptToAll = useStore((s) => s.syncSystemPromptToAll)
+  const clearAllSystemPrompts = useStore((s) => s.clearAllSystemPrompts)
   const setModal = useStore((s) => s.setModal)
   const notify = useStore((s) => s.notify)
 
@@ -167,6 +168,24 @@ function Topbar() {
         <IconBroadcast width={12} height={12} />
         同步 System Prompt
       </button>
+      )}
+      {!isGen && (
+        <button
+          className="btn sm"
+          disabled={!project.panels.some((p) => p.systemPrompt.trim())}
+          onClick={() => {
+            const n = project.panels.filter((p) => p.systemPrompt.trim()).length
+            // SP 可能是长文，误点丢了没处找回 —— 先确认
+            if (window.confirm(`清除全部 ${n} 个窗口的 system prompt？清掉后无法找回。`)) {
+              clearAllSystemPrompts()
+              notify('已清除所有窗口的 system prompt')
+            }
+          }}
+          title="把所有窗口的 system prompt 一键清空（不影响模型级默认值）"
+        >
+          <IconSparkle width={12} height={12} />
+          清除 SP
+        </button>
       )}
       <button className="btn sm" onClick={clearAll} disabled={!hasMessages}>
         <IconTrash width={12} height={12} />

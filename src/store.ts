@@ -106,6 +106,8 @@ interface Store extends PersistedState {
   /* system prompt */
   setPanelSystemPrompt: (panelId: string, text: string) => void
   syncSystemPromptToAll: (text: string) => void
+  /** 一键清除所有窗口的 system prompt */
+  clearAllSystemPrompts: () => void
   saveSystemPromptToModel: (panelId: string) => void
   applyPresetToPanel: (panelId: string, presetId: string) => void
   applyPresetToAll: (presetId: string) => void
@@ -708,6 +710,10 @@ export const useStore = create<Store>((set, get) => {
     syncSystemPromptToAll(text) {
       patchActivePanels((panels) => panels.map((p) => ({ ...p, systemPrompt: text })))
       get().notify(`已同步 system prompt 到本项目的全部 ${MAX_PANELS} 个窗口`)
+    },
+
+    clearAllSystemPrompts() {
+      patchActivePanels((panels) => panels.map((p) => ({ ...p, systemPrompt: '' })))
     },
 
     saveSystemPromptToModel(panelId) {
