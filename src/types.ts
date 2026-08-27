@@ -42,6 +42,12 @@ export const MODEL_CAPS: { cap: ModelCap; label: string; hint: string; kinds: Pr
 export interface CapOptions {
   ratio?: string[]
   resolution?: string[]
+  /**
+   * 该模型的默认清晰度（视频模型必填）。
+   * 输入区选「默认」时，每个窗口按自己模型的这个值发 ——
+   * 各家档位不同（Seedance 480p、MiniMax 768P），统一值没法让所有模型都合法。
+   */
+  resolutionDefault?: string
   size?: string[]
   /** 时长：给了 values 就按枚举，否则按 [min, max] 的整数区间 */
   durationValues?: number[]

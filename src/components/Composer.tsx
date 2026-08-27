@@ -409,7 +409,17 @@ export function Composer() {
                     value={params.resolution ?? ''}
                     placeholder="清晰度"
                     options={[
-                      { value: '', label: '默认清晰度' },
+                      {
+                        value: '',
+                        label: '默认',
+                        sub: (() => {
+                          // 直接展示各模型会用哪档，「默认」不再是黑盒
+                          const pairs = boundModels
+                            .filter((m) => m!.capOptions?.resolutionDefault)
+                            .map((m) => `${m!.name} ${m!.capOptions!.resolutionDefault}`)
+                          return pairs.length ? pairs.join(' · ') : '各窗口按模型默认档'
+                        })(),
+                      },
                       ...resOpts.map(optToItem),
                     ]}
                     onChange={(v) => setGenParams({ resolution: v || undefined })}

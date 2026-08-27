@@ -33,6 +33,7 @@ export const PARAM_PROFILES: ParamProfile[] = [
       durationMin: 4,
       durationMax: 15,
       resolution: ['480p', '720p'],
+      resolutionDefault: '480p',
       ratio: ['16:9', '9:16', '1:1', '4:3', '3:4', '3:2', '2:3', '21:9', '9:21', '2:1', '1:2', '16:10', '10:16', '5:4', '4:5', '235:100', 'adaptive'],
       refMax: 9,
     },
@@ -54,6 +55,7 @@ export const PARAM_PROFILES: ParamProfile[] = [
       durationMaxSolo: 30,
       // 实测：1080p 和 4k 都被接受
       resolution: ['480p', '720p', '1080p', '4k'],
+      resolutionDefault: '480p',
       ratio: [
         '16:9', '9:16', '1:1', '4:3', '3:4', '3:2', '2:3', '21:9', '9:21',
         '2:1', '1:2', '16:10', '10:16', '5:4', '4:5', '235:100', 'adaptive',
@@ -78,6 +80,7 @@ export const PARAM_PROFILES: ParamProfile[] = [
       durationMax: 15,
       // 实测：2.5 接受 1080p 和 4k；更低或更高的值被拒
       resolution: ['480p', '720p', '1080p', '4k'],
+      resolutionDefault: '480p',
       // 实测：5:7 和 32:9 都被接受 —— 比例其实不校验，这里只是常用值
       ratio: ['16:9', '9:16', '1:1', '4:3', '3:4', '3:2', '2:3', '21:9', '9:21', '2:1', '1:2', '16:10', '10:16', '5:4', '4:5', '235:100', 'adaptive'],
       refMax: 9,

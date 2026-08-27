@@ -143,9 +143,13 @@ export function ModelModal({ modelId }: { modelId: string | null }) {
     setResult(preset.note ? { ok: true, message: preset.note } : null)
   }
 
-  const canSave = isGen
-    ? Boolean(draft.name.trim() && draft.model.trim() && gen.submitURL.trim() && gen.submitBody.trim())
-    : Boolean(draft.name.trim() && draft.baseURL.trim() && draft.model.trim())
+  // 视频模型带清晰度能力时，默认清晰度必填 —— 输入区的「默认」选项靠它工作
+  const needsResolutionDefault =
+    kind === 'video' && caps.includes('resolution') && !draft.capOptions?.resolutionDefault
+  const canSave =
+    (isGen
+      ? Boolean(draft.name.trim() && draft.model.trim() && gen.submitURL.trim() && gen.submitBody.trim())
+      : Boolean(draft.name.trim() && draft.baseURL.trim() && draft.model.trim())) && !needsResolutionDefault
 
   /** 请求体模板是不是合法 JSON —— 占位符先替换成示例值再解析 */
   const bodyError = (() => {
@@ -495,6 +499,19 @@ export function ModelModal({ modelId }: { modelId: string | null }) {
                       onChange={(e) =>
                         patchOptions({ durationMaxSolo: e.target.value === '' ? undefined : Number(e.target.value) })
                       }
+                    />
+                  </div>
+                )}
+                {kind === 'video' && caps.includes('resolution') && (
+                  <div className="field">
+                    <label>
+                      默认清晰度 <span className="req">必填</span>
+                    </label>
+                    <Dropdown
+                      value={draft.capOptions?.resolutionDefault ?? ''}
+                      placeholder="测试时选「默认」就按这个档生成"
+                      options={(draft.capOptions?.resolution ?? []).map((r) => ({ value: r, label: r }))}
+                      onChange={(v) => patchOptions({ resolutionDefault: v || undefined })}
                     />
                   </div>
                 )}

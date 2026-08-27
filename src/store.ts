@@ -346,17 +346,30 @@ export const useStore = create<Store>((set, get) => {
       content: '',
       createdAt: now(),
       modelLabel: model.name,
-      // 存下提交时的参数 —— 每秒单价要用它来算
-      genParams: { ...params },
+      // 存下提交时的参数 —— 每秒单价要用它来算。
+      // 注意存「实际发出」的清晰度（默认档已按模型解析），不是界面上的空值
+      genParams: {
+        ...params,
+        ...(kind === 'video' && !params.resolution && model.capOptions?.resolutionDefault
+          ? { resolution: model.capOptions.resolutionDefault }
+          : {}),
+      },
     }
     const requestId = uid()
+
+    // 清晰度没选（=「默认」）时按这个模型自己的默认档发 ——
+    // 各家档位不同，一个统一值没法让所有模型都合法
+    const resolved =
+      kind === 'video' && !params.resolution && model.capOptions?.resolutionDefault
+        ? { ...params, resolution: model.capOptions.resolutionDefault }
+        : params
 
     window.api.genSend({
       requestId,
       modelId: model.id,
       prompt,
       imagePath,
-      params: kind === 'video' ? params : { size: params.size, ratio: params.ratio },
+      params: kind === 'video' ? resolved : { size: params.size, ratio: params.ratio },
     })
 
     return {
@@ -476,7 +489,15 @@ export const useStore = create<Store>((set, get) => {
         ? config.activeProjectId
         : projects[0].id
 
-      const models = (config.models ?? []).map((m) => ({ ...m, ...reviveCaps(m), hasKey: keyed.has(m.id) }))
+      const models = (config.models ?? []).map((m) => {
+        const revived = { ...m, ...reviveCaps(m), hasKey: keyed.has(m.id) }
+        // 老配置没有默认清晰度：取该模型清晰度表的第一档补上
+        const co = revived.capOptions
+        if (revived.kind === 'video' && co?.resolution?.length && !co.resolutionDefault) {
+          revived.capOptions = { ...co, resolutionDefault: co.resolution[0] }
+        }
+        return revived
+      })
       void window.api.syncModels(toRegistry(models))
 
       // 模块必须和当前项目对得上，否则打开就看到一个空列表
