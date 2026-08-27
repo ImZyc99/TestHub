@@ -166,7 +166,7 @@ function Topbar() {
         title="把第一个非空的 system prompt 同步给所有窗口"
       >
         <IconBroadcast width={12} height={12} />
-        同步 System Prompt
+        同步 SP
       </button>
       )}
       {!isGen && (
