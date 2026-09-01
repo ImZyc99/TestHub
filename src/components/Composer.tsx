@@ -95,7 +95,9 @@ export function Composer() {
 
   // 参数条是全项目共用的一套值，但每个窗口的模型允许的取值不一样。
   // 取交集：发出去的值对每个绑定的模型都合法，不会白花一次钱。
-  const boundModels = visible.map((p) => (p.modelId ? models.find((x) => x.id === p.modelId) : null)).filter(Boolean)
+  // 只算「会真的发出去」的窗口 —— 关掉群发开关的窗口不该参与任何参数约束，
+  // 否则一个被排除的模型能把整轮发送拦下（清晰度冲突、时长范围、素材上限都受此影响）
+  const boundModels = targets.map((p) => models.find((x) => x.id === p.modelId)).filter(Boolean)
   /**
    * 各家的取值几乎不重叠（Seedream 的 2K/4K、Gemini 的 1408x768、GPT 的 auto），
    * 取交集会把选项饿死到只剩 1024x1024。所以列并集，
